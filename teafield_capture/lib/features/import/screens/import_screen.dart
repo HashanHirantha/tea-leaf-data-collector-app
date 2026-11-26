@@ -1,5 +1,5 @@
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/disease_classes.dart';
@@ -136,7 +136,7 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
           if (state.result != null) ...[
             const SizedBox(height: 16),
             Card(
-              color: colorScheme.primaryContainer.withOpacity(0.6),
+              color: colorScheme.primaryContainer.withValues(alpha: 0.6),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(

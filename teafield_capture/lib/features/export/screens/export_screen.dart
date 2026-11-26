@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -124,20 +124,26 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                       ),
                 ),
                 const SizedBox(height: 8),
-                ...ExportFormatType.values.map(
-                  (fmt) => Card(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    child: RadioListTile<ExportFormatType>(
-                      value: fmt,
-                      groupValue: state.format,
-                      title: Text(fmt.title),
-                      subtitle: Text(fmt.subtitle),
-                      onChanged: state.isExporting
-                          ? null
-                          : (val) {
-                              if (val != null) notifier.setFormat(val);
-                            },
-                    ),
+                RadioGroup<ExportFormatType>(
+                  groupValue: state.format,
+                  onChanged: (val) {
+                    if (state.isExporting || val == null) return;
+                    notifier.setFormat(val);
+                  },
+                  child: Column(
+                    children: ExportFormatType.values
+                        .map(
+                          (fmt) => Card(
+                            margin: const EdgeInsets.only(bottom: 8),
+                            child: RadioListTile<ExportFormatType>(
+                              value: fmt,
+                              enabled: !state.isExporting,
+                              title: Text(fmt.title),
+                              subtitle: Text(fmt.subtitle),
+                            ),
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -149,44 +155,39 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                 ),
                 const SizedBox(height: 8),
                 Card(
-                  child: Column(
-                    children: [
-                      RadioListTile<bool>(
-                        value: true,
-                        groupValue: state.exportAll,
-                        title: Text(
-                          'All active samples (${state.allActiveSamples.length})',
+                  child: RadioGroup<bool>(
+                    groupValue: state.exportAll,
+                    onChanged: (val) {
+                      if (state.isExporting || val == null) return;
+                      notifier.setExportAll(val);
+                      if (!val && state.selectedUuids.isEmpty) {
+                        _selectSamplesDialog(state);
+                      }
+                    },
+                    child: Column(
+                      children: [
+                        RadioListTile<bool>(
+                          value: true,
+                          enabled: !state.isExporting,
+                          title: Text(
+                            'All active samples (${state.allActiveSamples.length})',
+                          ),
                         ),
-                        onChanged: state.isExporting
-                            ? null
-                            : (val) {
-                                if (val != null) notifier.setExportAll(val);
-                              },
-                      ),
-                      RadioListTile<bool>(
-                        value: false,
-                        groupValue: state.exportAll,
-                        title: Text(
-                          'Selected samples (${state.selectedUuids.length})',
+                        RadioListTile<bool>(
+                          value: false,
+                          enabled: !state.isExporting,
+                          title: Text(
+                            'Selected samples (${state.selectedUuids.length})',
+                          ),
+                          secondary: TextButton(
+                            onPressed: state.isExporting
+                                ? null
+                                : () => _selectSamplesDialog(state),
+                            child: const Text('Choose'),
+                          ),
                         ),
-                        secondary: TextButton(
-                          onPressed: state.isExporting
-                              ? null
-                              : () => _selectSamplesDialog(state),
-                          child: const Text('Choose'),
-                        ),
-                        onChanged: state.isExporting
-                            ? null
-                            : (val) {
-                                if (val != null) {
-                                  notifier.setExportAll(val);
-                                  if (state.selectedUuids.isEmpty) {
-                                    _selectSamplesDialog(state);
-                                  }
-                                }
-                              },
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -234,7 +235,7 @@ class _ExportScreenState extends ConsumerState<ExportScreen> {
                 if (state.result != null) ...[
                   const SizedBox(height: 16),
                   Card(
-                    color: colorScheme.primaryContainer.withOpacity(0.6),
+                    color: colorScheme.primaryContainer.withValues(alpha: 0.6),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(

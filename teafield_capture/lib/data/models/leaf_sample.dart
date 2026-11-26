@@ -2,6 +2,7 @@
 ///
 /// A leaf sample represents one physical leaf. Its upper and lower surface
 /// photographs are separate [LeafPhoto] records linked to the same sample UUID.
+library;
 
 /// Which surface of the leaf a photo shows.
 enum LeafSide {

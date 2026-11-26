@@ -462,7 +462,7 @@ class PackageTransferService {
       );
     }
 
-    final manifestStr = utf8.decode(manifestFile.readBytes());
+    final manifestStr = utf8.decode(_requireArchiveBytes(manifestFile));
     final manifest = TransferManifest.fromJson(manifestStr);
 
     return PackagePreview(
@@ -506,7 +506,7 @@ class PackageTransferService {
     }
 
     // Verify checksums for every file listed in checksums.sha256.
-    final checksumText = utf8.decode(checksumsEntry.readBytes());
+    final checksumText = utf8.decode(_requireArchiveBytes(checksumsEntry));
     final lines = checksumText
         .split('\n')
         .map((l) => l.trim())
@@ -525,7 +525,8 @@ class PackageTransferService {
         throw FormatException('Missing file listed in checksums: $relPath');
       }
       final actualHash =
-          Checksum.calculateBytesChecksum(archiveFile.readBytes()).toLowerCase();
+          Checksum.calculateBytesChecksum(_requireArchiveBytes(archiveFile))
+              .toLowerCase();
       if (actualHash != expectedHash) {
         throw FormatException(
           'Checksum verification failed for $relPath (package may be corrupted).',
@@ -534,7 +535,7 @@ class PackageTransferService {
     }
 
     final manifest = TransferManifest.fromJson(
-      utf8.decode(manifestEntry.readBytes()),
+      utf8.decode(_requireArchiveBytes(manifestEntry)),
     );
     final currentProjectCode = await _settings.getProjectCode();
     if (manifest.projectCode != currentProjectCode) {
@@ -546,9 +547,11 @@ class PackageTransferService {
 
     final allowSingleSide = await _settings.getAllowSingleSideComplete();
     final samplesRaw =
-        json.decode(utf8.decode(samplesEntry.readBytes())) as List<dynamic>;
+        json.decode(utf8.decode(_requireArchiveBytes(samplesEntry)))
+            as List<dynamic>;
     final photosRaw =
-        json.decode(utf8.decode(photosEntry.readBytes())) as List<dynamic>;
+        json.decode(utf8.decode(_requireArchiveBytes(photosEntry)))
+            as List<dynamic>;
 
     var samplesCreated = 0;
     var samplesMerged = 0;
@@ -654,7 +657,7 @@ class PackageTransferService {
         continue;
       }
 
-      final photoBytes = Uint8List.fromList(photoEntry.readBytes());
+      final photoBytes = Uint8List.fromList(_requireArchiveBytes(photoEntry));
       final actualSha = Checksum.calculateBytesChecksum(photoBytes);
       if (actualSha != incomingPhoto.sha256) {
         throw FormatException(
@@ -713,6 +716,14 @@ class PackageTransferService {
       conflicts: conflicts,
       packageChecksum: packageSha,
     );
+  }
+
+  Uint8List _requireArchiveBytes(ArchiveFile entry) {
+    final bytes = entry.readBytes();
+    if (bytes == null) {
+      throw FormatException('Archive entry "${entry.name}" has no readable bytes.');
+    }
+    return bytes;
   }
 
   List<String> _detectSampleConflicts(LeafSample local, LeafSample incoming) {

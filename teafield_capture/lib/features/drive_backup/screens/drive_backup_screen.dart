@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -192,66 +192,58 @@ class _DriveBackupScreenState extends ConsumerState<DriveBackupScreen> {
                 ),
                 const SizedBox(height: 8),
                 Card(
-                  child: Column(
-                    children: [
-                      RadioListTile<DriveBackupType>(
-                        value: DriveBackupType.changed,
-                        groupValue: state.backupType,
-                        title: Text(
-                          'New or changed records (${state.changedSamples.length})',
+                  child: RadioGroup<DriveBackupType>(
+                    groupValue: state.backupType,
+                    onChanged: (v) {
+                      if (state.isUploading || v == null) return;
+                      notifier.setBackupType(v);
+                      if (v == DriveBackupType.selected &&
+                          state.selectedUuids.isEmpty) {
+                        _pickSamplesDialog(state);
+                      }
+                    },
+                    child: Column(
+                      children: [
+                        RadioListTile<DriveBackupType>(
+                          value: DriveBackupType.changed,
+                          enabled: !state.isUploading,
+                          title: Text(
+                            'New or changed records (${state.changedSamples.length})',
+                          ),
+                          subtitle: const Text(
+                            'Samples not yet uploaded or edited since last confirmed backup',
+                          ),
                         ),
-                        subtitle: const Text(
-                          'Samples not yet uploaded or edited since last confirmed backup',
+                        RadioListTile<DriveBackupType>(
+                          value: DriveBackupType.all,
+                          enabled: !state.isUploading,
+                          title: Text(
+                            'All active records (${state.allActiveSamples.length})',
+                          ),
                         ),
-                        onChanged: state.isUploading
-                            ? null
-                            : (v) {
-                                if (v != null) notifier.setBackupType(v);
-                              },
-                      ),
-                      RadioListTile<DriveBackupType>(
-                        value: DriveBackupType.all,
-                        groupValue: state.backupType,
-                        title: Text(
-                          'All active records (${state.allActiveSamples.length})',
+                        RadioListTile<DriveBackupType>(
+                          value: DriveBackupType.selected,
+                          enabled: !state.isUploading,
+                          title: Text(
+                            'Selected samples (${state.selectedUuids.length})',
+                          ),
+                          secondary: TextButton(
+                            onPressed: state.isUploading
+                                ? null
+                                : () => _pickSamplesDialog(state),
+                            child: const Text('Choose'),
+                          ),
                         ),
-                        onChanged: state.isUploading
-                            ? null
-                            : (v) {
-                                if (v != null) notifier.setBackupType(v);
-                              },
-                      ),
-                      RadioListTile<DriveBackupType>(
-                        value: DriveBackupType.selected,
-                        groupValue: state.backupType,
-                        title: Text(
-                          'Selected samples (${state.selectedUuids.length})',
-                        ),
-                        secondary: TextButton(
-                          onPressed: state.isUploading
-                              ? null
-                              : () => _pickSamplesDialog(state),
-                          child: const Text('Choose'),
-                        ),
-                        onChanged: state.isUploading
-                            ? null
-                            : (v) {
-                                if (v != null) {
-                                  notifier.setBackupType(v);
-                                  if (state.selectedUuids.isEmpty) {
-                                    _pickSamplesDialog(state);
-                                  }
-                                }
-                              },
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
 
                 // ── Destination & Privacy Summary ───────────────────
                 Card(
-                  color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                  color: colorScheme.surfaceContainerHighest
+                      .withValues(alpha: 0.5),
                   child: Padding(
                     padding: const EdgeInsets.all(14),
                     child: Column(
@@ -354,7 +346,7 @@ class _DriveBackupScreenState extends ConsumerState<DriveBackupScreen> {
                     state.lastOutcome!.succeeded) ...[
                   const SizedBox(height: 12),
                   Card(
-                    color: colorScheme.primaryContainer.withOpacity(0.7),
+                    color: colorScheme.primaryContainer.withValues(alpha: 0.7),
                     child: Padding(
                       padding: const EdgeInsets.all(14),
                       child: Column(

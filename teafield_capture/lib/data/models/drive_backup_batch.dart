@@ -1,4 +1,5 @@
 /// Models tracking Google Drive backup batches and pending cloud deletions.
+library;
 
 enum DriveBackupType {
   all('all', 'All active records'),

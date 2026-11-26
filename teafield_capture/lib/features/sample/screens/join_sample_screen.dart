@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -124,7 +124,7 @@ class _JoinSampleScreenState extends ConsumerState<JoinSampleScreen> {
                       MobileScanner(
                         controller: _scannerController,
                         onDetect: _onDetect,
-                        errorBuilder: (context, error) {
+                        errorBuilder: (context, error, child) {
                           return Center(
                             child: Padding(
                               padding: const EdgeInsets.all(24),
@@ -272,23 +272,25 @@ class _JoinSampleScreenState extends ConsumerState<JoinSampleScreen> {
                 ),
           ),
           const SizedBox(height: 8),
-          RadioListTile<LeafSide>(
-            title: const Text('Upper surface (adaxial)'),
-            subtitle: const Text('Top side of the tea leaf'),
-            value: LeafSide.upper,
+          RadioGroup<LeafSide>(
             groupValue: state.selectedSide,
             onChanged: (val) {
               if (val != null) notifier.setSelectedSide(val);
             },
-          ),
-          RadioListTile<LeafSide>(
-            title: const Text('Lower surface (abaxial)'),
-            subtitle: const Text('Underside of the tea leaf'),
-            value: LeafSide.lower,
-            groupValue: state.selectedSide,
-            onChanged: (val) {
-              if (val != null) notifier.setSelectedSide(val);
-            },
+            child: const Column(
+              children: [
+                RadioListTile<LeafSide>(
+                  title: Text('Upper surface (adaxial)'),
+                  subtitle: Text('Top side of the tea leaf'),
+                  value: LeafSide.upper,
+                ),
+                RadioListTile<LeafSide>(
+                  title: Text('Lower surface (abaxial)'),
+                  subtitle: Text('Underside of the tea leaf'),
+                  value: LeafSide.lower,
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 20),
           FilledButton.icon(

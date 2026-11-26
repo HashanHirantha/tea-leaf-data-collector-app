@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -309,7 +309,7 @@ class _SampleListScreenState extends ConsumerState<SampleListScreen> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              value: state.estateFilter,
+              initialValue: state.estateFilter,
               decoration: const InputDecoration(
                 labelText: 'Estate',
                 border: OutlineInputBorder(),
@@ -326,7 +326,7 @@ class _SampleListScreenState extends ConsumerState<SampleListScreen> {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
-              value: state.labelFilter,
+              initialValue: state.labelFilter,
               decoration: const InputDecoration(
                 labelText: 'Field Label',
                 border: OutlineInputBorder(),
@@ -346,7 +346,7 @@ class _SampleListScreenState extends ConsumerState<SampleListScreen> {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
-              value: state.missingSideFilter,
+              initialValue: state.missingSideFilter,
               decoration: const InputDecoration(
                 labelText: 'Missing Side',
                 border: OutlineInputBorder(),
@@ -438,7 +438,7 @@ class _SampleListTile extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
       color: isSelected
-          ? colorScheme.primaryContainer.withOpacity(0.45)
+          ? colorScheme.primaryContainer.withValues(alpha: 0.45)
           : null,
       child: InkWell(
         onTap: onTap,

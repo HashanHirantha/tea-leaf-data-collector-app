@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -141,7 +141,7 @@ class _SampleDetailScreenState extends ConsumerState<SampleDetailScreen> {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
-                  value: selectedExpertLabel,
+                  initialValue: selectedExpertLabel,
                   isExpanded: true,
                   decoration: const InputDecoration(
                     labelText: 'Expert-confirmed label',
@@ -163,7 +163,7 @@ class _SampleDetailScreenState extends ConsumerState<SampleDetailScreen> {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<LabelStatus>(
-                  value: selectedLabelStatus,
+                  initialValue: selectedLabelStatus,
                   decoration: const InputDecoration(
                     labelText: 'Verification status',
                     border: OutlineInputBorder(),
@@ -432,7 +432,7 @@ class _SampleDetailScreenState extends ConsumerState<SampleDetailScreen> {
                   ),
                   const SizedBox(height: 10),
                   DropdownButtonFormField<String>(
-                    value: sample.fieldLabel,
+                    initialValue: sample.fieldLabel,
                     isExpanded: true,
                     decoration: const InputDecoration(
                       labelText: 'Field label (provisional)',

@@ -190,7 +190,7 @@ class GoogleDriveBackupService {
 
       final fileId = uploadedMeta['id'] as String?;
       if (fileId == null || fileId.isEmpty) {
-        return _markFailed(batch, 'Drive did not confirm a file ID.');
+        return await _markFailed(batch, 'Drive did not confirm a file ID.');
       }
 
       final completedBatch = batch.copyWith(
@@ -284,7 +284,7 @@ class GoogleDriveBackupService {
 
       final fileId = uploadedMeta['id'] as String?;
       if (fileId == null || fileId.isEmpty) {
-        return _markFailed(batch, 'Drive did not confirm a file ID.');
+        return await _markFailed(batch, 'Drive did not confirm a file ID.');
       }
 
       final completed = batch.copyWith(

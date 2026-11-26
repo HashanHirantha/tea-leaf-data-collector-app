@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -337,7 +337,7 @@ class _NewSampleScreenState extends ConsumerState<NewSampleScreen> {
                   ),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
-                    value: state.fieldLabelKey,
+                    initialValue: state.fieldLabelKey,
                     isExpanded: true,
                     decoration: const InputDecoration(
                       labelText: 'Provisional field label',
@@ -514,7 +514,7 @@ class _GpsStatusBanner extends StatelessWidget {
 
     if (gps.isCaptured) {
       return Card(
-        color: colorScheme.primaryContainer.withOpacity(0.6),
+        color: colorScheme.primaryContainer.withValues(alpha: 0.6),
         child: ListTile(
           leading: Icon(Icons.gps_fixed, color: colorScheme.primary),
           title: Text(
@@ -584,7 +584,7 @@ class _DropdownWithCustomField extends StatelessWidget {
     const customSentinel = '__custom__';
 
     return DropdownButtonFormField<String>(
-      value: (value != null && value!.isNotEmpty) ? value : null,
+      initialValue: (value != null && value!.isNotEmpty) ? value : null,
       isExpanded: true,
       decoration: InputDecoration(
         labelText: label,

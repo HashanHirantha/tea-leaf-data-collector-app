@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -214,7 +214,7 @@ class _DataManagementScreenState extends ConsumerState<DataManagementScreen> {
                                 : () async {
                                     final res = await notifier
                                         .retryPendingCloudDeletions();
-                                    if (mounted) {
+                                    if (context.mounted) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
