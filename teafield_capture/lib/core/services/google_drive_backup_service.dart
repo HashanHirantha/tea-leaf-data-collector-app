@@ -674,12 +674,15 @@ Do not modify filenames manually if you intend to re-import these archives into 
     throw const HttpException('Upload ended unexpectedly without confirmation.');
   }
 
-  DriveUploadOutcome _markFailed(DriveBackupBatch batch, String error) {
+  Future<DriveUploadOutcome> _markFailed(
+    DriveBackupBatch batch,
+    String error,
+  ) async {
     final failed = batch.copyWith(
       status: DriveBackupStatus.failed.databaseKey,
       lastError: error,
     );
-    _backupRepo.updateBatch(failed);
+    await _backupRepo.updateBatch(failed);
     return DriveUploadOutcome(
       batch: failed,
       succeeded: false,

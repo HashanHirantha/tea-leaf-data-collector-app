@@ -335,7 +335,7 @@ class _DriveBackupScreenState extends ConsumerState<DriveBackupScreen> {
                             state.errorMessage!,
                             style: TextStyle(color: colorScheme.onErrorContainer),
                           ),
-                          if (state.lastOutcome?.batch != null) ...[
+                          if (state.lastOutcome != null) ...[
                             const SizedBox(height: 8),
                             FilledButton.tonalIcon(
                               onPressed: () =>

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../core/constants/disease_classes.dart';
-import '../export/transfer_view_model.dart';
+import '../../../core/constants/disease_classes.dart';
+import '../transfer_view_model.dart';
 
 class ExportScreen extends ConsumerStatefulWidget {
   final List<String>? initialSelectedUuids;
