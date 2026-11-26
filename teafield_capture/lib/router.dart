@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'features/dashboard/screens/dashboard_screen.dart';
-import 'features/sample/screens/new_sample_screen.dart';
 import 'features/camera/screens/camera_screen.dart';
-import 'features/sample/screens/join_sample_screen.dart';
-import 'features/sample/screens/show_sample_qr_screen.dart';
-import 'features/sample/screens/sample_list_screen.dart';
-import 'features/sample/screens/sample_detail_screen.dart';
+import 'features/dashboard/screens/dashboard_screen.dart';
+import 'features/data_management/screens/data_management_screen.dart';
+import 'features/drive_backup/screens/drive_backup_history_screen.dart';
+import 'features/drive_backup/screens/drive_backup_screen.dart';
 import 'features/export/screens/export_screen.dart';
 import 'features/import/screens/import_screen.dart';
-import 'features/drive_backup/screens/drive_backup_screen.dart';
-import 'features/drive_backup/screens/drive_backup_history_screen.dart';
-import 'features/trash/screens/trash_screen.dart';
-import 'features/data_management/screens/data_management_screen.dart';
+import 'features/sample/screens/join_sample_screen.dart';
+import 'features/sample/screens/new_sample_screen.dart';
+import 'features/sample/screens/sample_detail_screen.dart';
+import 'features/sample/screens/sample_list_screen.dart';
+import 'features/sample/screens/show_sample_qr_screen.dart';
 import 'features/settings/screens/settings_screen.dart';
+import 'features/trash/screens/trash_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
@@ -30,7 +30,8 @@ final GoRouter appRouter = GoRouter(
       path: '/new-sample',
       name: 'new-sample',
       builder: (BuildContext context, GoRouterState state) {
-        return const NewSampleScreen();
+        final sampleUuid = state.uri.queryParameters['sampleUuid'];
+        return NewSampleScreen(existingSampleUuid: sampleUuid);
       },
     ),
     GoRoute(
@@ -79,7 +80,9 @@ final GoRouter appRouter = GoRouter(
       path: '/export',
       name: 'export',
       builder: (BuildContext context, GoRouterState state) {
-        return const ExportScreen();
+        final extra = state.extra;
+        final initialSelected = extra is List<String> ? extra : null;
+        return ExportScreen(initialSelectedUuids: initialSelected);
       },
     ),
     GoRoute(
@@ -93,7 +96,9 @@ final GoRouter appRouter = GoRouter(
       path: '/drive-backup',
       name: 'drive-backup',
       builder: (BuildContext context, GoRouterState state) {
-        return const DriveBackupScreen();
+        final extra = state.extra;
+        final initialSelected = extra is List<String> ? extra : null;
+        return DriveBackupScreen(initialSelectedUuids: initialSelected);
       },
     ),
     GoRoute(

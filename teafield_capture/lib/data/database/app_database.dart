@@ -1,8 +1,13 @@
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
+import '../../core/constants/app_constants.dart';
+import 'database_migrations.dart';
+
+/// Singleton SQLite database manager for TeaField Capture.
 class AppDatabase {
   AppDatabase._();
+
   static final AppDatabase instance = AppDatabase._();
 
   Database? _database;
@@ -15,16 +20,29 @@ class AppDatabase {
 
   Future<Database> _initDatabase() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'teafield_capture.db');
+    final path = join(dbPath, AppConstants.databaseName);
 
-    return await openDatabase(
+    return openDatabase(
       path,
-      version: 1,
-      onCreate: _onCreate,
+      version: AppConstants.databaseVersion,
+      onConfigure: (Database db) async {
+        await db.execute('PRAGMA foreign_keys = ON');
+      },
+      onCreate: (Database db, int version) async {
+        await DatabaseMigrations.createTables(db);
+      },
+      onUpgrade: DatabaseMigrations.upgrade,
     );
   }
 
-  Future<void> _onCreate(Database db, int version) async {
-    // Tables will be created by feature-specific migrations.
+  /// Allows injecting an in-memory database during unit tests.
+  void setTestDatabase(Database db) {
+    _database = db;
+  }
+
+  /// Closes the open database connection.
+  Future<void> close() async {
+    await _database?.close();
+    _database = null;
   }
 }
